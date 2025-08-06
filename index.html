@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Doktersportaal Demo</title>
+  <style>
+    /* (Zelfde CSS als eerder, ingekort voor duidelijkheid) */
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; }
+    header, nav, section, form, .footer { padding: 1rem; }
+    nav button { margin: 0.2rem; }
+    section { display: none; background: white; }
+    section.active { display: block; }
+    form { max-width: 600px; display: flex; flex-direction: column; gap: 0.5rem; }
+    input, textarea { padding: 0.5rem; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Doktersportaal Demo</h1>
+    <p>Met eenvoudige gegevensopslag (localStorage)</p>
+  </header>
+
+  <nav>
+    <button onclick="showSection('dossier')">🧑‍⚕️ Dossier</button>
+    <button onclick="showSection('medicatie')">💊 Medicatie</button>
+  </nav>
+
+  <section id="dossier" class="active">
+    <h2>Patiëntendossier</h2>
+    <form id="dossierForm">
+      <input type="text" id="naam" placeholder="Naam patiënt" />
+      <input type="text" id="geboorte" placeholder="Geboortedatum" />
+      <textarea id="klachten" placeholder="Klachten / Diagnose"></textarea>
+      <textarea id="notities" placeholder="Behandelplan / Notities"></textarea>
+      <button type="submit">Opslaan</button>
+    </form>
+    <p id="statusMsg" style="color: green;"></p>
+  </section>
+
+  <section id="medicatie">
+    <h2>Medicatiebeheer</h2>
+    <p>Demo – opslag nog niet geactiveerd.</p>
+  </section>
+
+  <div class="footer">
+    <p>Demo door ChatGPT – Gegevens worden lokaal opgeslagen in je browser</p>
+  </div>
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    // Laad opgeslagen gegevens bij openen
+    window.onload = () => {
+      const data = JSON.parse(localStorage.getItem("dossierData"));
+      if (data) {
+        document.getElementById("naam").value = data.naam || "";
+        document.getElementById("geboorte").value = data.geboorte || "";
+        document.getElementById("klachten").value = data.klachten || "";
+        document.getElementById("notities").value = data.notities || "";
+      }
+    };
+
+    // Opslaan in localStorage
+    document.getElementById("dossierForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const dossierData = {
+        naam: document.getElementById("naam").value,
+        geboorte: document.getElementById("geboorte").value,
+        klachten: document.getElementById("klachten").value,
+        notities: document.getElementById("notities").value,
+      };
+      localStorage.setItem("dossierData", JSON.stringify(dossierData));
+      document.getElementById("statusMsg").textContent = "Dossier opgeslagen!";
+      setTimeout(() => (document.getElementById("statusMsg").textContent = ""), 3000);
+    });
+  </script>
+</body>
+</html>
